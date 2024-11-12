@@ -68,12 +68,11 @@ const studentSchema = new mongoose.Schema({
     default: "https://i.imgur.com/r8bo8u7.png",
   },
   cohort: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Cohort",
-    required: true,
+    type: Number, 
+    ref: "Cohort"
   },
   projects: {
-    type: [String], // Assuming projects are stored as an array of strings; adjust as needed.
+    type: [String],
   },
 });
 

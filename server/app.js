@@ -2,8 +2,6 @@ const express = require("express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const PORT = 5005;
-//const cohorts = require("./cohorts.json");
-//const students = require("./students.json");
 const cors = require("cors");
 const Cohort = require("./models/Cohort.model.js");
 const Student = require("./models/Student.model.js");
@@ -11,6 +9,8 @@ const Student = require("./models/Student.model.js");
 // STATIC DATA
 // Devs Team - Import the provided files with JSON data of students and cohorts here:
 // ...
+//const cohorts = require("./cohorts.json");
+//const students = require("./students.json");
 
 // INITIALIZE EXPRESS APP - https://expressjs.com/en/4x/api.html#express
 const app = express();
@@ -21,7 +21,6 @@ app.use(
 );
 
 // INITIALIZE MONGOOSE
-
 const mongoose = require("mongoose");
 
 mongoose
@@ -45,17 +44,52 @@ app.get("/docs", (req, res) => {
   res.sendFile(__dirname + "/views/docs.html");
 });
 
-app.get("/api/cohorts/:cohortId", (req, res) => {
+
+
+// | HTTP verb | URL                        | Request body | Action                                 |
+// | GET       | `/api/cohorts`             | (empty)      | Returns all the cohorts in JSON format |
+// | GET       | `/api/cohorts/:cohortId`   | (empty)      | Returns the specified cohort by id     |
+
+app.get("/api/cohorts", (req, res) => {
+  Cohort.find()
+    .then((cohorts) => {
+      res.json(cohorts);
+    })
+    .catch((e) => console.log(e, "error searching the cohorts"));
+});
+
+app.get("/api/cohorts/:_id", (req, res) => {
   const { _id } = req.params;
-  Cohort.findById(_id)
+  console.log(_id);
+  console.log(parseInt(_id))
+  Cohort.findById(parseInt(_id))
     .then((cohort) => {
       res.json(cohort);
     })
     .catch((e) => console.log(e, "error searching the cohort by Id"));
 });
 
+// | HTTP verb | URL                               | Request body | Action                                                         |
+// | --------- | --------------------------------- | ------------ | -------------------------------------------------------------- |
+// | GET       | `/api/students`                   | (empty)      | Returns all the students in JSON format                        |
+// | GET       | `/api/students/cohort/:cohortId`  | (empty)      | Returns all the students of a specified cohort in JSON format  |
+// | GET       | `/api/students/:studentId`        | (empty)      | Returns the specified student by id                            |
+
 app.get("/api/students", (req, res) => {
   Student.find({})
+    .then((student) => {
+      res.json(student);
+    })
+    .catch((error) => {
+      res.status(500).json({ error: "Failed to retrieve students" });
+    });
+});
+
+
+app.get("/api/students/cohort/:_id", (req, res) => {
+  const { _id } = req.params;
+  Student.find({ "cohort": parseInt(_id) })
+    .populate("cohort","cohortName") // to retrieve cohortName from Cohort collection using cohort _id 
     .then((students) => {
       res.json(students);
     })
@@ -64,19 +98,22 @@ app.get("/api/students", (req, res) => {
     });
 });
 
-//Adventure.findById(id).exec();
 
 app.get("/api/students/:_id", (req, res) => {
   const { _id } = req.params;
-  console.log("this is called id :", _id);
-  console.log("this is type of id :", typeof _id);
-  Student.findById(_id)
+  console.log(_id);
+  console.log(parseInt(_id))
+  Student.findById(parseInt(_id))
     .populate("cohort")
     .then((student) => {
       res.json(student);
     })
     .catch((e) => console.log(e, "error searching the student by Id"));
 });
+
+
+
+
 
 // START SERVER
 app.listen(PORT, () => {

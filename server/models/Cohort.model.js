@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 // CREATE SCHEMA
 // Schema - describes and enforces the structure of the documents
 const cohortSchema = new Schema({
-  _id: String,
+  _id: Number,
   inProgress: Boolean,
   cohortSlug: String,
   cohortName: String,
