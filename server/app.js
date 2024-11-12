@@ -45,14 +45,14 @@ app.get("/docs", (req, res) => {
   res.sendFile(__dirname + "/views/docs.html");
 });
 
-// app.get("/api/cohorts/:cohortId", (req, res) => {
-//   const { _id } = req.params;
-//   Cohort.findById(_id)
-//     .then((cohort) => {
-//       res.json(cohort);
-//     })
-//     .catch((e) => console.log(e, "error searching the cohort by Id"));
-// });
+app.get("/api/cohorts/:cohortId", (req, res) => {
+  const { _id } = req.params;
+  Cohort.findById(_id)
+    .then((cohort) => {
+      res.json(cohort);
+    })
+    .catch((e) => console.log(e, "error searching the cohort by Id"));
+});
 
 app.get("/api/students", (req, res) => {
   Student.find({})
