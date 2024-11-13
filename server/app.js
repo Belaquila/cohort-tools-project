@@ -60,8 +60,7 @@ app.get("/api/cohorts", (req, res) => {
 
 app.get("/api/cohorts/:_id", (req, res) => {
   const { _id } = req.params;
-  console.log(_id);
-  console.log(parseInt(_id))
+  
   Cohort.findById(parseInt(_id))
     .then((cohort) => {
       res.json(cohort);
