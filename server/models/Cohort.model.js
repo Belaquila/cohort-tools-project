@@ -26,11 +26,7 @@ const Schema = mongoose.Schema;
 
 
 const cohortSchema = new Schema({
-  _id : {
-    type: Number,
-    required: true,
-    unique : true
-  },
+  _id: { type: mongoose.Schema.ObjectId },
   cohortSlug : {
     type: String,
     required: true,

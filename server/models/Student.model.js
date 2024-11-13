@@ -21,7 +21,10 @@ const Schema = mongoose.Schema;
 // });
 
 const studentSchema = new mongoose.Schema({
-  _id: { type: Number },
+  _id: { 
+    type: mongoose.Schema.ObjectId,
+    default : null,
+   },
   firstName: {
     type: String,
     required: true,
@@ -68,7 +71,7 @@ const studentSchema = new mongoose.Schema({
     default: "https://i.imgur.com/r8bo8u7.png",
   },
   cohort: {
-    type: Number, 
+    type: mongoose.Schema.ObjectId, 
     ref: "Cohort"
   },
   projects: {

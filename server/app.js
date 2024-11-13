@@ -58,10 +58,10 @@ app.get("/api/cohorts", (req, res) => {
     .catch((e) => console.log(e, "error searching the cohorts"));
 });
 
-app.get("/api/cohorts/:_id", (req, res) => {
-  const { _id } = req.params;
+app.get("/api/cohorts/:cohortId", (req, res) => {
+  const { cohortId } = req.params;
   
-  Cohort.findById(parseInt(_id))
+  Cohort.findById(cohortId)
     .then((cohort) => {
       res.json(cohort);
     })
@@ -74,6 +74,9 @@ app.get("/api/cohorts/:_id", (req, res) => {
 // | GET       | `/api/students/cohort/:cohortId`  | (empty)      | Returns all the students of a specified cohort in JSON format  |
 // | GET       | `/api/students/:studentId`        | (empty)      | Returns the specified student by id                            |
 
+
+
+
 app.get("/api/students", (req, res) => {
   Student.find({})
     .then((student) => {
@@ -85,9 +88,10 @@ app.get("/api/students", (req, res) => {
 });
 
 
-app.get("/api/students/cohort/:_id", (req, res) => {
-  const { _id } = req.params;
-  Student.find({ "cohort": parseInt(_id) })
+app.get("/api/students/cohort/:cohortId", (req, res) => {
+  const { cohortId } = req.params;
+  console.log(cohortId)
+  Student.find({ cohort: cohortId })
     .populate("cohort","cohortName") // to retrieve cohortName from Cohort collection using cohort _id 
     .then((students) => {
       res.json(students);
@@ -98,11 +102,10 @@ app.get("/api/students/cohort/:_id", (req, res) => {
 });
 
 
-app.get("/api/students/:_id", (req, res) => {
-  const { _id } = req.params;
-  console.log(_id);
-  console.log(parseInt(_id))
-  Student.findById(parseInt(_id))
+app.get("/api/students/:studentId", (req, res) => {
+  const  {studentId} = req.params;
+
+  Student.findById(studentId)
     .populate("cohort")
     .then((student) => {
       res.json(student);
@@ -110,7 +113,25 @@ app.get("/api/students/:_id", (req, res) => {
     .catch((e) => console.log(e, "error searching the student by Id"));
 });
 
+// | POST      | `/api/students`                   | JSON         | Creates a new student **with their respective cohort id**      |
+// | PUT       | `/api/students/:studentId`        | JSON         | Updates the specified student by id                            |
+// | DELETE    | `/api/students/:studentId`        | (empty)      | Deletes the specified cohort by id                             |
 
+app.post("/api/students", (req, res, next) => {
+
+  const newStudent = req.body;
+  console.log(req)
+
+  Student.create(newStudent)
+      .then(student => {
+          res.status(201).json(student);
+      })
+      .catch(error => {
+          console.log("Error creating a new student in the DB...");
+          console.log(error);
+          res.status(500).json({ error: "Failed to create a new student" });
+      })
+})
 
 
 
