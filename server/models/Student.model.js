@@ -5,20 +5,7 @@ const Schema = mongoose.Schema;
 // CREATE SCHEMA
 // Schema - describes and enforces the structure of the documents
 
-// const studentSchema = new Schema({
-//   _id: Number,
-//   firstName: String,
-//   lastName: String,
-//   email: String,
-//   phone: String,
-//   linkedinUrl: String,
-//   languages: Array,
-//   program: String,
-//   background: String,
-//   image: String,
-//   cohort: ObjectId,
-//   projects: Array,
-// });
+
 
 const studentSchema = new mongoose.Schema({
   _id: { 

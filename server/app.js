@@ -68,6 +68,65 @@ app.get("/api/cohorts/:cohortId", (req, res) => {
     .catch((e) => console.log(e, "error searching the cohort by Id"));
 });
 
+
+// | HTTP verb | URL                        | Request body | Action                                 |
+// | --------- | -------------------------- | ------------ | -------------------------------------- |
+// | POST      | `/api/cohorts`             | JSON         | Creates a new cohort                   |
+// | PUT       | `/api/cohorts/:cohortId`   | JSON         | Updates the specified cohort by id     |
+// | DELETE    | `/api/cohorts/:cohortId`   | (empty)      | Deletes the specified cohort by id     |
+
+app.post("/api/cohorts", (req, res) => {
+  
+  const newCohort = req.body;
+  console.log(req)
+
+  Cohort.create(newCohort)
+  .then(cohort => {
+      res.status(201).json(cohort);
+  })
+  .catch(error => {
+      console.log("Error creating a new cohort in the DB...");
+      console.log(error);
+      res.status(500).json({ error: "Failed to create a new cohort" });
+  })
+});
+
+
+
+app.put("/api/cohorts/:cohortId", (req, res, next) => {
+
+  const { cohortId } = req.params;
+
+  const newDetails = req.body;
+
+  Cohort.findByIdAndUpdate(cohortId, newDetails, { new: true })
+      .then(cohort => {
+          res.json(cohort);
+      })
+      .catch((error) => {
+          console.error("Error updating cohort...");
+          console.error(error);
+          res.status(500).json({ error: "Failed to update a cohort" });
+      });
+});
+
+
+app.delete("/api/cohorts/:cohortId", (req, res, next) => {
+
+  const { cohortId } = req.params;
+
+  Cohort.findByIdAndDelete(cohortId)
+      .then(cohort => {
+          res.json(cohort);
+      })
+      .catch((error) => {
+          console.error("Error deleting cohort ...");
+          console.error(error);
+          res.status(500).json({ error: "Failed to delete a cohort" });
+      });
+});
+
+
 // | HTTP verb | URL                               | Request body | Action                                                         |
 // | --------- | --------------------------------- | ------------ | -------------------------------------------------------------- |
 // | GET       | `/api/students`                   | (empty)      | Returns all the students in JSON format                        |
@@ -91,8 +150,8 @@ app.get("/api/students", (req, res) => {
 app.get("/api/students/cohort/:cohortId", (req, res) => {
   const { cohortId } = req.params;
   console.log(cohortId)
-  Student.find({ cohort: cohortId })
-    .populate("cohort","cohortName") // to retrieve cohortName from Cohort collection using cohort _id 
+  Student.find({ cohort : cohortId })
+    .populate("cohort") // to retrieve cohortName from Cohort collection using cohort _id 
     .then((students) => {
       res.json(students);
     })
@@ -102,8 +161,10 @@ app.get("/api/students/cohort/:cohortId", (req, res) => {
 });
 
 
+
 app.get("/api/students/:studentId", (req, res) => {
   const  {studentId} = req.params;
+  console.log("req.params ---> ", req.params)
 
   Student.findById(studentId)
     .populate("cohort")
@@ -133,6 +194,38 @@ app.post("/api/students", (req, res, next) => {
       })
 })
 
+app.put("/api/students/:studentId", (req, res, next) => {
+
+  const { studentId } = req.params;
+
+  const newDetails = req.body;
+
+  Student.findByIdAndUpdate(studentId, newDetails, { new: true })
+      .then(studentFromDB => {
+          res.json(studentFromDB);
+      })
+      .catch((error) => {
+          console.error("Error updating student...");
+          console.error(error);
+          res.status(500).json({ error: "Failed to update a student" });
+      });
+});
+
+
+app.delete("/api/students/:studentId", (req, res, next) => {
+
+  const { studentId } = req.params;
+
+  Student.findByIdAndDelete(studentId)
+      .then(response => {
+          res.json(response);
+      })
+      .catch((error) => {
+          console.error("Error deleting student ...");
+          console.error(error);
+          res.status(500).json({ error: "Failed to delete a student" });
+      });
+});
 
 
 // START SERVER
