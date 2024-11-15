@@ -1,10 +1,16 @@
 const express = require("express");
 const morgan = require("morgan");
+////require("dotenv/config");
+//require("param.env");
+
+
+
 const cookieParser = require("cookie-parser");
 const PORT = 5005;
 const cors = require("cors");
 
 const { errorHandler, notFoundHandler } = require("./middleware/error-handling.js")
+
 
 
 
@@ -41,7 +47,10 @@ app.get("/docs", (req, res) => {
 
 app.use("/", require("./routes/cohort.routes"));
 app.use("/", require("./routes/student.routes"));
+//app.use("/", require("./routes/user.routes"));
 
+//ROUTE FOR AUTH
+app.use("/auth", require("./routes/auth.routes"));
 
 // ERROR HANDLING 
 app.use(errorHandler);
