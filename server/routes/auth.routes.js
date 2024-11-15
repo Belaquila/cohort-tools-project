@@ -149,10 +149,10 @@ router.get('/verify', isAuthenticated, (req, res, next) => {
 
 //GET /api/users/:id - Retrieves a specific user by id.
 
-router.get('/api/users/:id', isAuthenticated, (req, res) => {
-    const { id } = req.params;
+router.get('/users', isAuthenticated, (req, res) => {
+    
   
-    User.findById(id) 
+    User.findById(req.payload._id) 
       .then(user => {
         if (!user) {
           return res.status(404).json({ message: 'User not found.' });
